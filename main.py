@@ -1,10 +1,16 @@
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import time
 import alsaaudio, time, audioop
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import time
+import threading
 
 inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE,alsaaudio.PCM_NONBLOCK)
-
-# Set attributes: Mono, 8000 Hz, 16 bit little endian samples
+	# Set attributes: Mono, 8000 Hz, 16 bit little endian samples
 inp.setchannels(1)
 inp.setrate(8000)
 inp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
@@ -17,27 +23,9 @@ inp.setformat(alsaaudio.PCM_FORMAT_S16_LE)
 # or 0 bytes of data. The latter is possible because we are in nonblocking
 # mode.
 inp.setperiodsize(160)
-i=0
-x=list()
-y=list()
-plt.ion() ## Note this correction
-fig=plt.figure()
-plt.axis([0,100,0,4000])
-
 
 while True:
-    x.append(i)
-    # Read data from device
-    l,data = inp.read()
-    if l:
-        # Return the maximum of the absolute value of all samples in a fragment.
-        temp_y = audioop.max(data, 2)
-        y.append(temp_y)
-        plt.scatter(i,temp_y);
-        plt.show()
-        plt.pause(0.0001)
-    time.sleep(.0001)
-    i += 1
-
-
-   
+	l,data = inp.read()
+	if l:
+		val = audioop.max(data,2)
+		print(val)
