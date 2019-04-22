@@ -8,10 +8,17 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import time
 import threading
+from matplotlib.widgets import Button
+from helpers import copy, record, runCode
 
 xar = [0]*400
 yar = [0]*400
 i = 0
+
+def analyze(event):
+	record()
+	copy()
+	runCode()
 
 def writeSounds(xar, yar):
 	inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE,alsaaudio.PCM_NONBLOCK)
@@ -27,7 +34,7 @@ def writeSounds(xar, yar):
 	# This means that the reads below will return either 320 bytes of data
 	# or 0 bytes of data. The latter is possible because we are in nonblocking
 	# mode.
-	inp.setphoneriodsize(160)
+	inp.setperiodsize(160)
 	i=0
 	while True:
 	    l,data = inp.read()
@@ -43,8 +50,14 @@ t.start()
 
 fig = plt.figure()
 ax1 = fig.add_subplot(1,1,1)
+ax2 = fig.add_subplot()
 def animate(i):
     ax1.clear()
-    ax1.plot(xar,yar, linestyle = '-', color = 'black', linewidth=1)
+    ax1.plot(xar,yar, linestyle = '-', color = 'blue', linewidth=1)
 ani = animation.FuncAnimation(fig, animate, interval=10)
+
+axbut = plt.axes([.5,0,.25,.05])
+bcut = Button(axbut, 'Analyze Sound', color='red', hovercolor='green')
+bcut.on_clicked(analyze)
+
 plt.show()
