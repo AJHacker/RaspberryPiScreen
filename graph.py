@@ -18,7 +18,9 @@ i = 0
 def analyze(event):
 	record()
 	copy()
+	print("copied")
 	runCode()
+	print("done running")
 
 def writeSounds(xar, yar):
 	inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE,alsaaudio.PCM_NONBLOCK)
