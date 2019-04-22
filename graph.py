@@ -21,7 +21,7 @@ def analyze(event):
 	runCode()
 
 def writeSounds(xar, yar):
-	inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE,alsaaudio.PCM_NONBLOCK)
+	inp = alsaaudio.PCM(alsaaudio.PCM_CA PTURE,alsaaudio.PCM_NONBLOCK)
 	# Set attributes: Mono, 8000 Hz, 16 bit little endian samples
 	inp.setchannels(1)
 	inp.setrate(8000)
@@ -39,7 +39,7 @@ def writeSounds(xar, yar):
 	while True:
 	    l,data = inp.read()
 	    if l:
-	        val = audioop.max(data,2)
+	        val = audioop.max(int(data),2)
 	        i+=1
 	        xar[i] = i
 	        yar[i] = val
