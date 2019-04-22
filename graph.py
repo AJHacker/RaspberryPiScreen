@@ -37,14 +37,17 @@ def writeSounds(xar, yar):
 	inp.setperiodsize(160)
 	i=0
 	while True:
-	    l,data = inp.read()
-	    if l:
-	        val = audioop.max(int(data),2)
-	        i+=1
-	        xar[i] = i
-	        yar[i] = val
-	        if(i>=399):
-	        	i = 0
+		l,data = inp.read()
+		if l:
+			try:
+				val = audioop.max(data,2)
+			except:
+				val = 0
+			i+=1
+			xar[i] = i
+			yar[i] = val
+			if(i>=399):
+				i = 0
 t = threading.Thread(target = writeSounds, args=(xar,yar,))
 t.start()
 
@@ -52,8 +55,8 @@ fig = plt.figure()
 ax1 = fig.add_subplot(1,1,1)
 ax2 = fig.add_subplot()
 def animate(i):
-    ax1.clear()
-    ax1.plot(xar,yar, linestyle = '-', color = 'blue', linewidth=1)
+	ax1.clear()
+	ax1.plot(xar,yar, linestyle = '-', color = 'blue', linewidth=1)
 ani = animation.FuncAnimation(fig, animate, interval=10)
 
 axbut = plt.axes([.5,0,.25,.05])
