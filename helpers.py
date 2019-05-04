@@ -18,10 +18,10 @@ def copy():
     os.system('sshpass -p "%s" scp "%s" "%s"' % (password, localfile, remotehost))
 
 def record():
-    CHUNK = 1024
-    FORMAT = pyaudio.paInt16
-    CHANNELS = 2
-    RATE = 44100
+    CHUNK = 1000
+    FORMAT = 8
+    CHANNELS = 1
+    RATE = 2000
     RECORD_SECONDS = 5
     WAVE_OUTPUT_FILENAME = "test.wav"
 

@@ -10,9 +10,13 @@ import time
 import threading
 from matplotlib.widgets import Button
 from helpers import copy, record, runCode
+import tkinter as tk
+from tkinter import messagebox
+root = tk.Tk()
+root.withdraw()
 
-xar = [0]*400
 yar = [0]*400
+xar = [z for z in range(400)]
 i = 0
 
 def analyze(event):
@@ -21,6 +25,10 @@ def analyze(event):
 	print("copied")
 	runCode()
 	print("done running")
+	messagebox.showwarning('Analysis Complete', 'You are dead')
+
+
+
 
 def writeSounds(xar, yar):
 	inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE,alsaaudio.PCM_NONBLOCK)
@@ -54,15 +62,20 @@ t = threading.Thread(target = writeSounds, args=(xar,yar,))
 t.start()
 
 fig = plt.figure()
+fig.patch.set_facecolor('xkcd:grey')
 ax1 = fig.add_subplot(1,1,1)
+ax1.set_facecolor('xkcd:black')
+
 ax2 = fig.add_subplot()
 def animate(i):
 	ax1.clear()
 	ax1.plot(xar,yar, linestyle = '-', color = 'blue', linewidth=1)
 ani = animation.FuncAnimation(fig, animate, interval=10)
 
-axbut = plt.axes([.5,0,.25,.05])
+axbut = plt.axes([.25,0,.5,.05])
 bcut = Button(axbut, 'Analyze Sound', color='red', hovercolor='green')
 bcut.on_clicked(analyze)
 
 plt.show()
+
+
