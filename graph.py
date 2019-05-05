@@ -8,19 +8,33 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import time
 import threading
-from matplotlib.widgets import Button
+from matplotlib.widgets import Button, Slider
 from helpers import copy, record, runCode
 import tkinter as tk
 from tkinter import messagebox
-root = tk.Tk()
-root.withdraw()
+
 
 yar = [0]*400
 xar = [z for z in range(400)]
 i = 0
+dic = {'gain':5, 'curr': "", 'rootNot':True}
+
+
+def showMessage():
+	print('hi')
+	plt.text(0.05,0.1, "Recording")
+	plt.show()
 
 def analyze(event):
+	dic['curr'] = "Recording"
+	# t = threading.Thread(target = showMessage, args=())
+	# t.start()
+	# plt.text(0.05,0.1, "Recording")
+	# plt.show(block=False)
+	# plt.pause(0.001)
+
 	record()
+	dic['curr'] = ""
 	copy()
 	print("copied")
 	runCode()
@@ -30,7 +44,11 @@ def analyze(event):
 
 
 
-def writeSounds(xar, yar):
+def writeSounds(xar, yar, dic):
+	if dic['rootNot']:
+		root = tk.Tk()
+		root.withdraw()	
+		dic['rootNot']=False		
 	inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE,alsaaudio.PCM_NONBLOCK)
 	# Set attributes: Mono, 8000 Hz, 16 bit little endian samples
 	inp.setchannels(1)
@@ -48,9 +66,16 @@ def writeSounds(xar, yar):
 	i=0
 	while True:
 		l,data = inp.read()
+		if dic['curr'] == "Recording":
+			root = tk.Tk()
+			root.withdraw()
+			messagebox.showwarning("", "RECORDING IN PROGRESS")
+			root.destroy()
 		if l:
+			# plt.text(0.05,0.1, dic[curr])
+
 			try:
-				val = audioop.max(data,2)
+				val = dic['gain'] * audioop.max(data,2)
 			except:
 				val = 0
 			i+=1
@@ -58,24 +83,42 @@ def writeSounds(xar, yar):
 			yar[i] = val
 			if(i>=399):
 				i = 0
-t = threading.Thread(target = writeSounds, args=(xar,yar,))
+t = threading.Thread(target = writeSounds, args=(xar,yar, dic))
 t.start()
 
 fig = plt.figure()
 fig.patch.set_facecolor('xkcd:grey')
 ax1 = fig.add_subplot(1,1,1)
 ax1.set_facecolor('xkcd:black')
+plt.subplots_adjust(bottom=0.2, top=0.9, left=0.05, right=0.95)
+ax1.axes.get_xaxis().set_visible(False)
+ax1.axes.get_yaxis().set_visible(False)
 
-ax2 = fig.add_subplot()
+axcolor = 'lightgoldenrodyellow'
+axamp = plt.axes([0.15, 0.15, 0.7, 0.03], facecolor=axcolor)
+
+samp = Slider(axamp, 'Gain', 0.1, 50.0, valinit=5)
+
+def update(val):
+    dic['gain'] = samp.val
+    print(dic['gain'])
+samp.on_changed(update)
+
+# # resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
+# button = Button(resetax, 'Reset', color=axcolor, hovercolor='0.975')
+
+
 def animate(i):
 	ax1.clear()
-	ax1.plot(xar,yar, linestyle = '-', color = 'blue', linewidth=1)
+	ax1.plot(xar,yar, linestyle = '-', color = 'red', linewidth=1)
 ani = animation.FuncAnimation(fig, animate, interval=10)
 
-axbut = plt.axes([.25,0,.5,.05])
-bcut = Button(axbut, 'Analyze Sound', color='red', hovercolor='green')
+axbut = plt.axes([.3,0.03, .4,.05])
+bcut = Button(axbut, 'Analyze Sound', color='white', hovercolor='green')
+bcut.label.set_fontsize(8)
 bcut.on_clicked(analyze)
 
+# plt.ion()
 plt.show()
 
 
