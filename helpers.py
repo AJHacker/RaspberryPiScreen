@@ -1,23 +1,31 @@
 import pyaudio
 import wave
 import os
-
+import subprocess
 
 
 
 def runCode():
     password = os.environ['pass']
     remotehost = "arihantj@cascade.andrew.cmu.edu"
-    os.system('sshpass -p "%s" ssh %s "cd Private/Capstone; export PYTHONPATH="/afs/ece.cmu.edu/usr/arihantj/Private/Capstone/lib"; python3 classify_heartbeat.py"' % (password, remotehost))
+    ret = subprocess.check_output('sshpass -p "%s" ssh %s "cd Private/Capstone; export PYTHONPATH="/afs/ece.cmu.edu/usr/arihantj/Private/Capstone/lib"; python3 classify_heartbeat.py"' % (password, remotehost), shell=True)
+    ret = ret.splitlines()
+    # print(ret[-1], type(ret[-1]))
+    res = []
+    res.append(ret[-1].decode('utf8'))
+    # print(res, type(res))
+    x = ret[-3].decode('utf8')
+    x = x.split('/t')
+    print(x)
 
-
+    # return()
 def copy():
     password = os.environ['pass']
     localfile = "test.wav"
     remotehost = "arihantj@cascade.andrew.cmu.edu:~/Private/Capstone/test.wav"
     os.system('sshpass -p "%s" scp "%s" "%s"' % (password, localfile, remotehost))
 
-def record():
+def record(gain):
     CHUNK = 1000
     FORMAT = 8
     CHANNELS = 1
@@ -38,7 +46,7 @@ def record():
     frames = []
 
     for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        data = stream.read(CHUNK)
+        data = gain*stream.read(CHUNK)
         frames.append(data)
 
     print("* done recording")

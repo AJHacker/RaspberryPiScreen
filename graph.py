@@ -17,7 +17,7 @@ from tkinter import messagebox
 yar = [0]*400
 xar = [z for z in range(400)]
 i = 0
-dic = {'gain':5, 'curr': "", 'rootNot':True}
+dic = {'gain':5, 'curr': "", 'rootNot':True, 'analysis': True}
 
 
 def showMessage():
@@ -33,13 +33,17 @@ def analyze(event):
 	# plt.show(block=False)
 	# plt.pause(0.001)
 
-	record()
+	record(dic['gain'])
 	dic['curr'] = ""
 	copy()
 	print("copied")
-	runCode()
+	x=runCode()
+
+	# print(x)
+
+	dic['curr'] = "Done"
 	print("done running")
-	messagebox.showwarning('Analysis Complete', 'You are dead')
+	
 
 
 
@@ -68,8 +72,17 @@ def writeSounds(xar, yar, dic):
 		l,data = inp.read()
 		if dic['curr'] == "Recording":
 			root = tk.Tk()
+			root.geometry("300x224")
+			root.resizable(0,0)
 			root.withdraw()
 			messagebox.showwarning("", "RECORDING IN PROGRESS")
+			root.destroy()
+		if dic['curr'] == 'Done':
+			root = tk.Tk()
+			root.geometry("300x224")
+			root.resizable(0,0)
+			root.withdraw()
+			messagebox.showwarning('Analysis Complete', dic['analysis'])
 			root.destroy()
 		if l:
 			# plt.text(0.05,0.1, dic[curr])
