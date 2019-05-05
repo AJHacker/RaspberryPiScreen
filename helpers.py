@@ -26,10 +26,10 @@ def copy():
     os.system('sshpass -p "%s" scp "%s" "%s"' % (password, localfile, remotehost))
 
 def record(gain):
-    CHUNK = 1000
+    CHUNK = 1024
     FORMAT = 8
     CHANNELS = 1
-    RATE = 2000
+    RATE = 44100
     RECORD_SECONDS = 5
     WAVE_OUTPUT_FILENAME = "test.wav"
 
@@ -39,14 +39,14 @@ def record(gain):
                     channels=CHANNELS,
                     rate=RATE,
                     input=True,
-                    frames_per_buffer=CHUNK)
+                    frames_per_buffer=CHUNK, input_device_index=2)
 
     print("* recording")
 
     frames = []
 
     for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        data = gain*stream.read(CHUNK)
+        data = gain*stream.read(CHUNK, exception_on_overflow=False)
         frames.append(data)
 
     print("* done recording")

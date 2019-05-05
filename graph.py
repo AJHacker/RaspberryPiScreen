@@ -53,7 +53,7 @@ def writeSounds(xar, yar, dic):
 		root = tk.Tk()
 		root.withdraw()	
 		dic['rootNot']=False		
-	inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE,alsaaudio.PCM_NONBLOCK)
+	inp = alsaaudio.PCM(alsaaudio.PCM_CAPTURE,alsaaudio.PCM_NONBLOCK,cardindex=1)
 	# Set attributes: Mono, 8000 Hz, 16 bit little endian samples
 	inp.setchannels(1)
 	inp.setrate(8000)
