@@ -38,7 +38,7 @@ def analyze(event):
 	dic['curr'] = "ANALYZING"
 	copy()
 	print("copied")
-	x=runCode() #[Normal/Abnormal, Abnormal%, Normal%]
+	x=runCode(dic) #[Normal/Abnormal, Abnormal%, Normal%]
 
 	dic['curr'] = "Done"
 	print("done running")
@@ -80,13 +80,6 @@ def writeSounds(xar, yar, dic):
 			root.withdraw()
 			messagebox.showwarning("", "%s IN PROGRESS"%dic['curr'])
 			root.destroy()
-		# if dic['curr'] == "Wait":
-		# 	root = tk.Tk()
-		# 	root.geometry("300x224")
-		# 	root.resizable(0,0)
-		# 	root.withdraw()
-		# 	messagebox.showwarning("", "ANALYZING IN PROGRESS")
-		# 	root.destroy()			
 		if dic['curr'] == 'Done':
 			root = tk.Tk()
 			root.geometry("300x224")
@@ -125,11 +118,11 @@ ax1.axes.get_yaxis().set_visible(False)
 axcolor = 'lightgoldenrodyellow'
 axamp = plt.axes([0.15, 0.15, 0.7, 0.03], facecolor=axcolor)
 
-samp = Slider(axamp, 'Gain', 0.1, 50.0, valinit=5)
+samp = Slider(axamp, 'Gain', 1, 5, valinit=1.5)
 
 def update(val):
     dic['gain'] = samp.val
-    print(dic['gain'])
+
 samp.on_changed(update)
 
 # # resetax = plt.axes([0.8, 0.025, 0.1, 0.04])

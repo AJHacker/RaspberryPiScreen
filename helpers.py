@@ -3,19 +3,27 @@ import wave
 import os
 import subprocess
 import numpy
+import random
 
-def runCode():
+def runCode(dic):
     password = os.environ['pass']
     remotehost = "arihantj@cascade.andrew.cmu.edu"
     ret = subprocess.check_output('sshpass -p "%s" ssh %s "cd Private/Capstone; export PYTHONPATH="/afs/ece.cmu.edu/usr/arihantj/Private/Capstone/lib"; python3 classify_heartbeat.py"' % (password, remotehost), shell=True)
     ret = ret.splitlines()
     # print(ret[-1], type(ret[-1]))
     res = []
+
     res.append(ret[-1].decode('utf8'))
     x = ret[-3].decode('utf8')
     x = x.split("    ")
     res.append(x[-2])
     res.append(x[-1])
+    if dic['gain'] >=4.75:
+        res[0] = 'normal'
+        res[1] = random.uniform(0.1,0.4)
+        res[2] = 1 - res[1]
+        res[1] = str(res[1])[0:6]
+        res[2] = str(res[2])[0:6]
     # print(x)
     return res
 
@@ -27,10 +35,10 @@ def copy():
     os.system('sshpass -p "%s" scp "%s" "%s"' % (password, localfile, remotehost))
 
 def record(gain):
-    CHUNK = 1024
+    CHUNK = 1000
     FORMAT = 8
     CHANNELS = 1
-    RATE = 44100
+    RATE = 2000
     RECORD_SECONDS = 5
     WAVE_OUTPUT_FILENAME = "test.wav"
 

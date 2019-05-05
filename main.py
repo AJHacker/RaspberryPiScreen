@@ -29,3 +29,11 @@ while True:
 	if l:
 		val = audioop.max(data,2)
 		print(val)
+
+
+'''
+Normal Heart: Gain must be > 2.0
+Abnormal Heart: Gain must be less than 2.7
+Human Heart: Gain = 3
+
+''' 
