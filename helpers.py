@@ -2,8 +2,7 @@ import pyaudio
 import wave
 import os
 import subprocess
-
-
+import numpy
 
 def runCode():
     password = os.environ['pass']
@@ -13,10 +12,12 @@ def runCode():
     # print(ret[-1], type(ret[-1]))
     res = []
     res.append(ret[-1].decode('utf8'))
-    # print(res, type(res))
     x = ret[-3].decode('utf8')
-    x = x.split('/t')
-    print(x)
+    x = x.split("    ")
+    res.append(x[-2])
+    res.append(x[-1])
+    # print(x)
+    return res
 
     # return()
 def copy():
@@ -46,7 +47,7 @@ def record(gain):
     frames = []
 
     for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        data = gain*stream.read(CHUNK)
+        data = int(gain) * stream.read(CHUNK)
         frames.append(data)
 
     print("* done recording")

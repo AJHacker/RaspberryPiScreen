@@ -14,10 +14,11 @@ import tkinter as tk
 from tkinter import messagebox
 
 
+
 yar = [0]*400
 xar = [z for z in range(400)]
 i = 0
-dic = {'gain':5, 'curr': "", 'rootNot':True, 'analysis': True}
+dic = {'gain':5, 'curr': "", 'rootNot':True, 'analysis': "", 'normal': "", 'abnormal': ""}
 
 
 def showMessage():
@@ -26,7 +27,7 @@ def showMessage():
 	plt.show()
 
 def analyze(event):
-	dic['curr'] = "Recording"
+	dic['curr'] = "RECORDING"
 	# t = threading.Thread(target = showMessage, args=())
 	# t.start()
 	# plt.text(0.05,0.1, "Recording")
@@ -34,15 +35,17 @@ def analyze(event):
 	# plt.pause(0.001)
 
 	record(dic['gain'])
-	dic['curr'] = ""
+	dic['curr'] = "ANALYZING"
 	copy()
 	print("copied")
-	x=runCode()
-
-	# print(x)
+	x=runCode() #[Normal/Abnormal, Abnormal%, Normal%]
 
 	dic['curr'] = "Done"
 	print("done running")
+	dic['analysis'] = x[0]
+	dic['abnormal'] = x[1]
+	dic['normal'] = x[2]
+	print(x)
 	
 
 
@@ -70,19 +73,31 @@ def writeSounds(xar, yar, dic):
 	i=0
 	while True:
 		l,data = inp.read()
-		if dic['curr'] == "Recording":
+		if dic['curr'] == "RECORDING" or dic['curr'] == "ANALYZING":
 			root = tk.Tk()
 			root.geometry("300x224")
 			root.resizable(0,0)
 			root.withdraw()
-			messagebox.showwarning("", "RECORDING IN PROGRESS")
+			messagebox.showwarning("", "%s IN PROGRESS"%dic['curr'])
 			root.destroy()
+		# if dic['curr'] == "Wait":
+		# 	root = tk.Tk()
+		# 	root.geometry("300x224")
+		# 	root.resizable(0,0)
+		# 	root.withdraw()
+		# 	messagebox.showwarning("", "ANALYZING IN PROGRESS")
+		# 	root.destroy()			
 		if dic['curr'] == 'Done':
 			root = tk.Tk()
 			root.geometry("300x224")
 			root.resizable(0,0)
 			root.withdraw()
-			messagebox.showwarning('Analysis Complete', dic['analysis'])
+			if dic['analysis'] == 'normal':
+				text = 'Normal: %s' % dic['normal']
+			else:
+				text = 'Abnormal: %s' % dic['abnormal']
+			messagebox.showinfo('Analysis Complete', text)
+			dic['curr'] = ""
 			root.destroy()
 		if l:
 			# plt.text(0.05,0.1, dic[curr])
