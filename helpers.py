@@ -27,10 +27,10 @@ def copy():
     os.system('sshpass -p "%s" scp "%s" "%s"' % (password, localfile, remotehost))
 
 def record(gain):
-    CHUNK = 1000
+    CHUNK = 1024
     FORMAT = 8
     CHANNELS = 1
-    RATE = 2000
+    RATE = 44100
     RECORD_SECONDS = 5
     WAVE_OUTPUT_FILENAME = "test.wav"
 
