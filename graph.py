@@ -118,7 +118,7 @@ ax1.axes.get_yaxis().set_visible(False)
 axcolor = 'lightgoldenrodyellow'
 axamp = plt.axes([0.15, 0.15, 0.7, 0.03], facecolor=axcolor)
 
-samp = Slider(axamp, 'Gain', 1, 5, valinit=1.5)
+samp = Slider(axamp, 'Gain', 1, 5, valinit=2.5)
 
 def update(val):
     dic['gain'] = samp.val
